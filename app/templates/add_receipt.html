@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>手动添加购物信息</title>
+</head>
+<body>
+    <h1>手动添加购物信息</h1>
+    <form method="post">
+        <label>用户:
+            <select name="user_id">
+                {% for u in users %}
+                <option value="{{ u.id }}">{{ u.name }}</option>
+                {% endfor %}
+            </select>
+        </label><br>
+        <label>分类:
+            <select name="category_id">
+                {% for c in categories %}
+                <option value="{{ c.id }}">{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </label><br>
+        <label>商家: <input type="text" name="merchant"></label><br>
+        <label>日期: <input type="text" name="date" placeholder="YYYY-MM-DD"></label><br>
+        <label>金额: <input type="text" name="amount"></label><br>
+        <label>明细: <textarea name="details"></textarea></label><br>
+        <button type="submit">添加</button>
+    </form>
+    <a href="/receipts">返回购物信息</a>
+</body>
+</html> 

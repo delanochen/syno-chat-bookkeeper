@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>购物报表</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f6f8fa; margin: 0; }
+        .container { max-width: 1100px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 32px 40px 24px 40px; }
+        h1 { text-align: center; color: #2d3a4b; margin-bottom: 32px; }
+        form { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: center; margin-bottom: 24px; }
+        label { font-weight: 500; color: #1976d2; }
+        select, input[type="date"] { padding: 4px 8px; border-radius: 4px; border: 1px solid #b0bec5; }
+        button, .export-btn { background: #1976d2; color: #fff; border: none; border-radius: 4px; padding: 6px 18px; font-size: 1em; cursor: pointer; margin-left: 8px; }
+        button:hover, .export-btn:hover { background: #0d47a1; }
+        table { width: 100%; border-collapse: collapse; margin-top: 18px; background: #fafbfc; }
+        th, td { border: 1px solid #e3e6ea; padding: 8px 6px; text-align: center; }
+        th { background: #e3e6ea; color: #1976d2; }
+        .summary { margin: 18px 0 8px 0; font-size: 1.1em; color: #333; }
+        .footer { text-align: center; margin-top: 32px; }
+        a { color: #1976d2; text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        a:hover { color: #0d47a1; }
+        @media (max-width: 900px) { .container { padding: 16px 4px; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>购物报表</h1>
+    <form id="filterForm" onsubmit="return false;">
+        <label>用户:
+            <select id="user_id" name="user_id">
+                <option value="">全部</option>
+                {% for u in users %}
+                <option value="{{ u.id }}">{{ u.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>分类:
+            <select id="category_id" name="category_id">
+                <option value="">全部</option>
+                {% for c in categories %}
+                <option value="{{ c.id }}">{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>起始日期:
+            <input type="date" id="date_from" name="date_from">
+        </label>
+        <label>结束日期:
+            <input type="date" id="date_to" name="date_to">
+        </label>
+        <button onclick="loadData()">筛选</button>
+        <button type="button" class="export-btn" onclick="exportCSV()">导出CSV</button>
+    </form>
+    <div class="summary" id="summary"></div>
+    <table id="reportTable">
+        <thead>
+            <tr>
+                <th>ID</th><th>用户</th><th>分类</th><th>商家</th><th>日期</th><th>明细</th><th>金额</th><th>创建时间</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div class="footer">
+        <a href="/receipts">返回购物信息</a>
+    </div>
+</div>
+<script>
+function getFilters() {
+    return {
+        user_id: document.getElementById('user_id').value,
+        category_id: document.getElementById('category_id').value,
+        date_from: document.getElementById('date_from').value,
+        date_to: document.getElementById('date_to').value
+    };
+}
+function loadData() {
+    const f = getFilters();
+    const params = new URLSearchParams(f).toString();
+    fetch('/api/report/data?' + params).then(r => r.json()).then(res => {
+        const tbody = document.querySelector('#reportTable tbody');
+        tbody.innerHTML = '';
+        res.data.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${row.id}</td><td>${row.user}</td><td>${row.category}</td><td>${row.merchant}</td><td>${row.date}</td><td>${row.details || ''}</td><td>${row.amount || ''}</td><td>${row.created_at}</td>`;
+            tbody.appendChild(tr);
+        });
+        let summary = `总金额：<b style='color:#1976d2'>￥${res.total.toFixed(2)}</b>　|　分类汇总：`;
+        for (let cat in res.by_category) {
+            summary += `${cat}: ￥${res.by_category[cat].toFixed(2)}　`;
+        }
+        document.getElementById('summary').innerHTML = summary;
+    });
+}
+function exportCSV() {
+    const f = getFilters();
+    const params = new URLSearchParams(f).toString();
+    window.open('/api/report/export?' + params, '_blank');
+}
+window.onload = loadData;
+</script>
+</body>
+</html> 

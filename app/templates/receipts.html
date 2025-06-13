@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>购物信息列表</title>
+</head>
+<body>
+    <h1>购物信息列表</h1>
+    <a href="/categories">分类管理</a> | <a href="/receipts/add">手动添加购物信息</a>
+    <table border="1">
+        <tr>
+            <th>ID</th><th>用户</th><th>分类</th><th>商家</th><th>日期</th><th>金额</th><th>明细</th><th>图片</th><th>创建时间</th>
+        </tr>
+        {% for r in receipts %}
+        <tr>
+            <td>{{ r.id }}</td>
+            <td>{{ r.user.name if r.user else '' }}</td>
+            <td>{{ r.category.name if r.category else '' }}</td>
+            <td>{{ r.merchant }}</td>
+            <td>{{ r.date }}</td>
+            <td>{{ r.amount }}</td>
+            <td>{{ r.details }}</td>
+            <td>{% if r.image_path %}<a href="{{ r.image_path }}" target="_blank">查看</a>{% endif %}</td>
+            <td>{{ r.created_at }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html> 

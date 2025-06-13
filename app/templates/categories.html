@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>商品分类管理</title>
+</head>
+<body>
+    <h1>商品分类管理</h1>
+    <form method="post" action="/categories/add">
+        <input type="text" name="name" placeholder="新分类名称" required>
+        <button type="submit">添加分类</button>
+    </form>
+    <ul>
+        {% for cat in categories %}
+        <li>{{ cat.name }} <a href="/categories/delete/{{ cat.id }}">删除</a></li>
+        {% endfor %}
+    </ul>
+    <a href="/receipts">返回购物信息</a>
+</body>
+</html> 

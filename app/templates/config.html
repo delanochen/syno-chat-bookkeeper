@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>ROB机器人接口配置</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f6f8fa; margin: 0; }
+        .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 32px 40px 24px 40px; }
+        h1 { text-align: center; color: #2d3a4b; margin-bottom: 32px; }
+        form { display: flex; flex-direction: column; gap: 18px; }
+        label { font-weight: 500; color: #1976d2; }
+        input[type="text"], input[type="password"] { padding: 6px 10px; border-radius: 4px; border: 1px solid #b0bec5; font-size: 1em; }
+        button { background: #1976d2; color: #fff; border: none; border-radius: 4px; padding: 8px 0; font-size: 1.1em; cursor: pointer; margin-top: 12px; }
+        button:hover { background: #0d47a1; }
+        .footer { text-align: center; margin-top: 32px; }
+        a { color: #1976d2; text-decoration: none; font-weight: 500; transition: color 0.2s; }
+        a:hover { color: #0d47a1; }
+        .msg { color: #388e3c; text-align: center; margin-bottom: 12px; }
+        .webhook-url-block { background: #f0f4f8; border-radius: 6px; padding: 12px 10px; margin-bottom: 18px; font-size: 1.05em; word-break: break-all; }
+        .webhook-url-label { color: #333; font-weight: 600; margin-bottom: 4px; display: block; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>ROB机器人接口配置</h1>
+    <div class="webhook-url-block">
+        <span class="webhook-url-label">请将下方URL配置到Synology Chat机器人的Webhook：</span>
+        <span id="webhook-url">{{ webhook_receive_url }}</span>
+        <button style="margin-left:10px;padding:2px 10px;font-size:0.95em;" onclick="copyWebhookUrl()">复制</button>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="msg">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <form method="post">
+        <label>Webhook URL:
+            <input type="text" name="webhook_url" value="{{ config.webhook_url or '' }}" required>
+        </label>
+        <label>Token（如有）:
+            <input type="text" name="token" value="{{ config.token or '' }}">
+        </label>
+        <button type="submit">保存配置</button>
+    </form>
+    <div class="footer">
+        <a href="/">返回首页</a>
+    </div>
+</div>
+<script>
+function copyWebhookUrl() {
+    const url = document.getElementById('webhook-url').innerText;
+    navigator.clipboard.writeText(url).then(()=>{
+        alert('已复制到剪贴板！');
+    });
+}
+</script>
+</body>
+</html> 

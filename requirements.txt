@@ -1,0 +1,5 @@
+Flask
+Flask_SQLAlchemy
+pytesseract
+Pillow
+requests 

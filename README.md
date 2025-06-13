@@ -1,5 +1,6 @@
-# syno-chat-bookkeeper
-# 项目简介
+# Flask NAS Receipt OCR 项目
+
+## 项目简介
 本项目基于 Flask，部署于群晖 NAS，通过 Synology Chat 机器人自动接收购物小票图片，进行 OCR 解析，提取关键信息并分类，支持多用户、分类管理、统计分析等功能。
 
 ## 主要功能
